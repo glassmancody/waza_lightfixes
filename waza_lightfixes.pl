@@ -9420,7 +9420,6 @@ use File::HomeDir;
 use File::Spec::Functions 'catfile';
 use Convert::Color::RGB8;
 use Convert::Color::HSV;
-use Tk;
 use File::Find::Rule;
 use List::Util qw[min max];
 
@@ -9515,9 +9514,9 @@ while (my $line = <$fh>) { #
 
 # retrieve plugin absolute paths 
 foreach my $plugin (@plugin_paths) {
-	$plugin =~ s/[()\.]/\\$&/g;
+	my $plugin_to_search = quotemeta($plugin);
 	my @found_files = File::Find::Rule->file
-								      ->name(qr/$plugin$/i)
+								      ->name(qr/$plugin_to_search/i)
 									  ->maxdepth(1)
 									  ->readable
 									  ->in(@data_paths);
@@ -9538,8 +9537,13 @@ print $output make_header({
 
 my %seen;
 for my $plugin (@plugin_paths) {
+	my ($filename, $dir, $suffix) = fileparse($plugin, qr/\.[^.]*$/);
 
-	next if basename($plugin) eq "LightFixes.esp";
+	# only process esp/esm/omwscripts
+	next unless ($suffix =~ /\.(esp|esm|omwaddon)$/i);
+
+	# don't process yourself
+	next if $filename eq "LightFixes";
 
 	if (! -e $plugin) {
 		$ended_in_warning = 1;
@@ -9618,12 +9622,10 @@ for my $plugin (@plugin_paths) {
 		$record->encode->write_rec($output);
 	}
 }
-
-my $msg = new MainWindow;
 if ($ended_in_warning) {	
-	$msg -> messageBox(-message=>"ESP generated but with warnings FeelsBadMan");
+	say "ESP generated but with warnings FeelsBadMan";
 } else {
-	$msg -> messageBox(-message=>"ESP generated with no warnings, FeelsAmazingMan");
+	say "ESP generated with no warnings, FeelsAmazingMan";
 }
 
 } # tes3cmd_main
