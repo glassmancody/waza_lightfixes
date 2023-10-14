@@ -9540,6 +9540,7 @@ my %seen;
 for my $plugin (@plugin_paths) {
 
 	next if basename($plugin) eq "LightFixes.esp";
+	next if (basename($plugin) =~ m/.omwscripts/);
 
 	if (! -e $plugin) {
 		$ended_in_warning = 1;
