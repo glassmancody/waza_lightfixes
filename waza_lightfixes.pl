@@ -9627,12 +9627,12 @@ for my $plugin (@plugin_paths) {
 	}
 }
 
-# my $msg = new MainWindow;
-# if ($ended_in_warning) {
-# 	$msg -> messageBox(-message=>"ESP generated but with warnings FeelsBadMan");
-# } else {
-# 	$msg -> messageBox(-message=>"ESP generated with no warnings, FeelsAmazingMan");
-# }
+my $msg = new MainWindow;
+if ($ended_in_warning) {
+	$msg -> messageBox(-message=>"ESP generated but with warnings FeelsBadMan");
+} else {
+	$msg -> messageBox(-message=>"ESP generated with no warnings, FeelsAmazingMan");
+}
 
 } # tes3cmd_main
 
