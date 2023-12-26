@@ -2769,6 +2769,13 @@ my @RECDEFS =
 	       [RIDT => [["weight", "f"], ["value", "L"], ["uses", "L"], ["quality", "f"]]],
 	       [SCRI => [["script", "Z*"]]],
 	      ]],
+     [LUAL => [
+	       [LUAS => [["Script", "Z*"]]],
+	       [LUAD => [["InitData", "Z*"]]],
+	       [LUAF => [["Flag", "a32"], ["Types", "Z*"]]],
+	       [LUAI => [["Instance", "a32"], ["Master", "a32"]]],
+	       [LUAR => [["Record", "Z*"]]],
+	      ]],
      [SCPT => [
 	       [SCHD => [["id", ["Z32", "a32"]], ["num_shorts", "L"], ["num_longs", "L"], ["num_floats", "L"],
 			 ["data_size", "L"], ["local_var_size", "L"]]],
