@@ -9486,6 +9486,10 @@ if ($os eq "MSWin32") {
 	exit;
 }
 
+if ( ! -e $config_path ) {
+	$config_path = catfile(".", "openmw.cfg");
+}
+
 if ( -e $config_path) {
 	say "found config file '$config_path'";
 	say "making a backup of config...just in case";
