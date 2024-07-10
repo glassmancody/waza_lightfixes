@@ -9434,6 +9434,10 @@ sub tes3cmd_main {
 
 ### BEGIN CONFIG 
 
+# Loading OpenMW from standard or portable location.
+my $openmw_cfg_path = "";
+my $dest_path = "";
+
 my $DISABLE_FLICKERING => 1; 
 
 ## HSV and light radius multipliers 
@@ -9468,6 +9472,8 @@ if (-e $ini_path) {
 	$VAL = $cfg->val("General", "value", $VAL);
 	$RAD = $cfg->val("General", "radius", $RAD);
 	$DISABLE_FLICKERING = $cfg->val("General", "disableflickering", $DISABLE_FLICKERING);
+	$openmw_cfg_path = $cfg->val("General", "openmw_cfg_path", "");
+	$dest_path = $cfg->val("General", "dest_path", "LightFixes.esp");
 }
 
 if ($DISABLE_FLICKERING) { say "Disable Flickering \t= True"; }
@@ -9475,23 +9481,27 @@ if ($DISABLE_FLICKERING) { say "Disable Flickering \t= True"; }
 my $config_path = "";
 my $os = $Config{osname};
 
-if ($os eq "MSWin32") {
-	$config_path = catfile(File::HomeDir->my_documents, "My Games", "OpenMW", "openmw.cfg");
-} elsif ($os eq "linux") {
-	$config_path = catfile(File::HomeDir->my_home, ".config", "openmw", "openmw.cfg"); 
-} elsif ($os eq "darwin") {
-	$config_path = catfile(File::HomeDir->my_home, "Library", "Preferences", "openmw", "openmw.cfg");
+if ($openmw_cfg_path eq "") {
+	if ($os eq "MSWin32") {
+		$config_path = catfile(File::HomeDir->my_documents, "My Games", "OpenMW", "openmw.cfg");
+	} elsif ($os eq "linux") {
+		$config_path = catfile(File::HomeDir->my_home, ".config", "openmw", "openmw.cfg"); 
+	} elsif ($os eq "darwin") {
+		$config_path = catfile(File::HomeDir->my_home, "Library", "Preferences", "openmw", "openmw.cfg");
+	} else {
+		say "ERROR: could not detect correct operating system, aborting :(";
+		exit;
+	}
 } else {
-	say "ERROR: could not detect correct operating system, aborting :(";
-	exit;
+	$config_path = $openmw_cfg_path;
 }
 
 if ( -e $config_path) {
 	say "found config file '$config_path'";
 	say "making a backup of config...just in case";
 	copy($config_path, "openmw.cfg.bck") or say "failed creating backup :(";
-	} else {
-	say "no config file found, aborting!";
+} else {
+	say "no config file found ($config_path), aborting!";
 	exit;
 }
 
@@ -9536,7 +9546,7 @@ foreach my $plugin (@plugin_paths) {
 	}
 }
 
-my $output = open_for_output("LightFixes.esp");
+my $output = open_for_output($dest_path);
 print $output make_header({
 	author => "...",
 	description => "...",
