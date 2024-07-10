@@ -1,0 +1,1 @@
+pp -o waza_lightfixes.exe waza_lightfixes.pl
