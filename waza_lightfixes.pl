@@ -9474,22 +9474,34 @@ if ($DISABLE_FLICKERING) { say "Disable Flickering \t= True"; }
 # find config file
 my $config_path = "";
 my $os = $Config{osname};
+my $noBackup = "";
+my $openmwCfg = '';
+GetOptions (
+    'no-backup' => \$noBackup,
+    'openmw-cfg=s' => \$openmwCfg
+    );
 
-if ($os eq "MSWin32") {
-	$config_path = catfile(File::HomeDir->my_documents, "My Games", "OpenMW", "openmw.cfg");
-} elsif ($os eq "linux") {
-	$config_path = catfile(File::HomeDir->my_home, ".config", "openmw", "openmw.cfg"); 
-} elsif ($os eq "darwin") {
-	$config_path = catfile(File::HomeDir->my_home, "Library", "Preferences", "openmw", "openmw.cfg");
+if ($openmwCfg eq "") {
+    if ($os eq "MSWin32") {
+        $config_path = catfile(File::HomeDir->my_documents, "My Games", "OpenMW", "openmw.cfg");
+    } elsif ($os eq "linux") {
+        $config_path = catfile(File::HomeDir->my_home, ".config", "openmw", "openmw.cfg");
+    } elsif ($os eq "darwin") {
+        $config_path = catfile(File::HomeDir->my_home, "Library", "Preferences", "openmw", "openmw.cfg");
+    } else {
+        say "ERROR: could not detect correct operating system, aborting :(";
+        exit;
+    }
 } else {
-	say "ERROR: could not detect correct operating system, aborting :(";
-	exit;
+    $config_path = $openmwCfg;
 }
 
 if ( -e $config_path) {
 	say "found config file '$config_path'";
-	say "making a backup of config...just in case";
-	copy($config_path, "openmw.cfg.bck") or say "failed creating backup :(";
+    if ($noBackup eq "") {
+        say "making a backup of config...just in case";
+        copy($config_path, "openmw.cfg.bck") or say "failed creating backup :(";
+    }
 	} else {
 	say "no config file found, aborting!";
 	exit;
