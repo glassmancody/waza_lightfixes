@@ -9496,6 +9496,10 @@ if ($openmwCfg eq "") {
     $config_path = $openmwCfg;
 }
 
+if ( ! -e $config_path ) {
+	$config_path = catfile(".", "openmw.cfg");
+}
+
 if ( -e $config_path) {
 	say "found config file '$config_path'";
     if ($noBackup eq "") {
